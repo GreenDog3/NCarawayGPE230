@@ -19,6 +19,16 @@ private:
 	float moveSpeed;
 	UPROPERTY(EditAnywhere)
 	float turnSpeed;
+	UPROPERTY(EditAnywhere)
+	float traceRadius = 500.0f;
+	UPROPERTY(EditAnywhere)
+	FName punchingSocketName;
+	UPROPERTY(EditAnywhere)
+	float hitDamage;
+	UPROPERTY(EditAnywhere)
+	UAnimSequence* deathAnim;
+
+	bool isDead = false;
 
 public:
 	// Sets default values for this character's properties
@@ -28,7 +38,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void Die();
 public:	
+
+	float currentHealth;
+	UPROPERTY(EditAnywhere)
+	float maxHealth;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -39,4 +55,7 @@ public:
 	void MoveRight(float speed);
 	void Rotate(float speed);
 	void DoJump();
+	void DoStun();
+	UFUNCTION(BlueprintCallable, Category ="Collision")
+	void DetectHit();
 };
