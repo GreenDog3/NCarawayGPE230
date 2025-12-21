@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "MazeCharacter.h"
 #include "MazeKey.h"
+#include "MazeCharacter.h"
+
 
 
 AMazeKey::AMazeKey()
@@ -20,9 +20,18 @@ void AMazeKey::OnPickup(AActor* OverlappedActor, AActor* OtherActor)
 
 void AMazeKey::OpenDoor()
 {
-	//destroy door
-	doorToOpen->Destroy();
+	if (doorToOpen)
+	{
+		//destroy door
+		doorToOpen->Destroy();
 
-	//destroy key
-	this->Destroy();
+		//destroy key
+		this->Destroy();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("A key with no door? HEY! GET ME A KEY WITH NOTHIN'!"));
+		UE_LOG(LogTemp, Error, TEXT("A key with nothin'???"));
+	}
+
 }

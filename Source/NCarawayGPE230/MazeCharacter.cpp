@@ -26,20 +26,31 @@ void AMazeCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	currentHealth = maxHealth;
-	
+	isDead = false;
 }
 
 float AMazeCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	if (!isDead)
+	if (!isDead && isDoesHealth)
 	{
 		currentHealth -= DamageAmount;
-
-		UE_LOG(LogTemp, Log, TEXT("Player was SLAMMED with %f POINTS of RAW DAMAGE!!! Only %f PITIFUL POINTS of HEALTH stand between the PLAYER and CERTAIN DEATH"), DamageAmount, currentHealth);
+		if (currentHealth > maxHealth)
+		{
+			currentHealth = maxHealth;
+		}
+		if (DamageAmount > 0)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Player was SLAMMED with %f POINTS of RAW DAMAGE!!! Only %f PITIFUL POINTS of HEALTH stand between the PLAYER and CERTAIN DEATH"), DamageAmount, currentHealth);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("Player has supped upon beautiful ambrosia and recovered %f points of health! They now have %f beautiful health points :)"), -DamageAmount, currentHealth);
+		}
 		if (currentHealth <= 0.0f)
 		{
 			Die();
 		}
+		
 		return DamageAmount;
 	}
 	else
@@ -59,6 +70,7 @@ void AMazeCharacter::Die()
 	GetMesh()->PlayAnimation(deathAnim, false);
 }
 
+
 // Called every frame
 void AMazeCharacter::Tick(float DeltaTime)
 {
@@ -74,7 +86,7 @@ void AMazeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"),this, &AMazeCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("Rotate"), this, &AMazeCharacter::Rotate);
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &AMazeCharacter::DoJump);
-	PlayerInputComponent->BindAction(TEXT("Stun"), IE_Pressed, this, & AMazeCharacter::DoStun);
+	//PlayerInputComponent->BindAction(TEXT("Stun"), IE_Pressed, this, & AMazeCharacter::DoStun);
 }
 
 void AMazeCharacter::MoveForward(float speed)
@@ -98,11 +110,11 @@ void AMazeCharacter::DoJump()
 	Jump();
 }
 
-void AMazeCharacter::DoStun()
+/*void AMazeCharacter::DoStun()
 {
 	//get all characters in a radius
 	//call their stun events
-}
+}*/
 
 void AMazeCharacter::DetectHit()
 {
@@ -122,7 +134,7 @@ void AMazeCharacter::DetectHit()
 	{
 		for (const FHitResult hitResult : hitArray)
 		{
-			if (canDamage)
+			if (canDamage&&hitResult.GetActor()->IsA(AMazeCharacter::StaticClass()))
 			{
 				FString hitVictimName = hitResult.GetActor()->GetName();
 
@@ -139,4 +151,21 @@ void AMazeCharacter::DetectHit()
 
 
 }
+
+void AMazeCharacter::ActivateStunParticleSystem()
+{
+	if (stunSystem)
+	{
+		USceneComponent* AttachComp = GetDefaultAttachComponent();
+
+		UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(stunSystem, AttachComp, NAME_None, FVector(0), FRotator(0), EAttachLocation::Type::KeepRelativeOffset, true);
+
+		NiagaraComp->Activate();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("WHERE ARE MY PARTICLES? I CAN'T HAVE MY STUN ABILITY WITHOUT MY PARTICLES!!!!"));
+	}
+}
+
 

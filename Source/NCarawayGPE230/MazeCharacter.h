@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "MazeCharacter.generated.h"
+#include "Blueprint/UserWidget.h"
 
 UCLASS()
 class NCARAWAYGPE230_API AMazeCharacter : public ACharacter
@@ -27,8 +30,12 @@ private:
 	float hitDamage;
 	UPROPERTY(EditAnywhere)
 	UAnimSequence* deathAnim;
-
+	UPROPERTY(EditAnywhere)
+	bool isDoesHealth;
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* stunSystem;
 	bool isDead = false;
+
 
 public:
 	// Sets default values for this character's properties
@@ -55,7 +62,9 @@ public:
 	void MoveRight(float speed);
 	void Rotate(float speed);
 	void DoJump();
-	void DoStun();
+	//void DoStun();
 	UFUNCTION(BlueprintCallable, Category ="Collision")
 	void DetectHit();
+	UFUNCTION(BlueprintCallable)
+	void ActivateStunParticleSystem();
 };
