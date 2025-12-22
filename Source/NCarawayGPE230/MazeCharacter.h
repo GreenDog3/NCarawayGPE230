@@ -6,8 +6,8 @@
 #include "GameFramework/Character.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
-#include "MazeCharacter.generated.h"
 #include "Blueprint/UserWidget.h"
+#include "MazeCharacter.generated.h"
 
 UCLASS()
 class NCARAWAYGPE230_API AMazeCharacter : public ACharacter
@@ -32,6 +32,7 @@ private:
 	UAnimSequence* deathAnim;
 	UPROPERTY(EditAnywhere)
 	bool isDoesHealth;
+	
 	UPROPERTY(EditAnywhere)
 	UNiagaraSystem* stunSystem;
 	bool isDead = false;
@@ -48,10 +49,12 @@ protected:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void Die();
 public:	
-
+	UPROPERTY(BlueprintReadOnly)
 	float currentHealth;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float maxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool isDoesWin;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

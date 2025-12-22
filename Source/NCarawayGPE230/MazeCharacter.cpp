@@ -106,7 +106,6 @@ void AMazeCharacter::Rotate(float speed)
 
 void AMazeCharacter::DoJump()
 {
-	UE_LOG(LogTemp, Warning, TEXT("le jump"));
 	Jump();
 }
 
