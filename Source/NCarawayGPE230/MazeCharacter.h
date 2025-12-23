@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
-#include "Blueprint/UserWidget.h"
 #include "MazeCharacter.generated.h"
 
 UCLASS()
